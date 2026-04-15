@@ -12,8 +12,6 @@ const App = () => {
       >
         <Text style={styles.Text}>Balance Shop</Text>
 
-        {/* <Login />
-        <Register /> */}
 
       </ImageBackground>
     </View>

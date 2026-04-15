@@ -24,6 +24,6 @@ sequelize.authenticate()
 sequelize.sync()
     .then(() => console.log("✅ Tables synced"));
 
-app.listen(3000, () => {
+app.listen(3000, '0.0.0.0', () => {
     console.log("Server chạy tại http://localhost:3000");
 });
