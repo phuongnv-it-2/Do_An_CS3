@@ -1,7 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { router } from "expo-router";
 import LottieView from "lottie-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -69,8 +71,14 @@ export default function Login() {
         Alert.alert("Thất bại", data.error || "Sai tài khoản hoặc mật khẩu");
         return;
       }
+      try {
+        await AsyncStorage.setItem("userData", JSON.stringify(data.user));
+      } catch (e) {
+        console.log("Lỗi lưu dữ liệu:", e);
+      }
 
       Alert.alert("Đăng nhập thành công 🎉");
+      router.replace("/Overall");
     } catch (err) {
       console.log("Lỗi kết nối:", err);
       Alert.alert("Lỗi", "Không thể kết nối đến server. Kiểm tra lại Backend.");

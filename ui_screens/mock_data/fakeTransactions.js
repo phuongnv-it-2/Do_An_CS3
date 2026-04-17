@@ -1,0 +1,42 @@
+export const fakeTransactions = [
+  {
+    id: "1",
+    title: "Ăn trưa",
+    amount: "-50.000đ",
+    type: "expense",
+    icon: "🍔",
+    date: "17/04/2026",
+  },
+  {
+    id: "2",
+    title: "Lương tháng 4",
+    amount: "+15.000.000đ",
+    type: "income",
+    icon: "💰",
+    date: "15/04/2026",
+  },
+  {
+    id: "3",
+    title: "Đổ xăng",
+    amount: "-80.000đ",
+    type: "expense",
+    icon: "⛽",
+    date: "14/04/2026",
+  },
+  {
+    id: "4",
+    title: "Cà phê",
+    amount: "-35.000đ",
+    type: "expense",
+    icon: "☕",
+    date: "14/04/2026",
+  },
+  {
+    id: "5",
+    title: "Mua sắm",
+    amount: "-500.000đ",
+    type: "expense",
+    icon: "🛍️",
+    date: "12/04/2026",
+  },
+];
