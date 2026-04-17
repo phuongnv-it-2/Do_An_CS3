@@ -1,17 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import LottieView from "lottie-react-native";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import LottieView from "lottie-react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function Login() {
   const animation = useRef(null);
@@ -51,7 +51,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch("http://10.60.69.253/auth/login", {
+      const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

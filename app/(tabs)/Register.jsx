@@ -1,12 +1,12 @@
+import LottieView from "lottie-react-native";
 import React, { useRef, useState } from "react";
 import {
-  View,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
+  View,
 } from "react-native";
-import LottieView from "lottie-react-native";
 import Appdialog from "../../components/AppDialog";
 
 export default function Register() {
@@ -19,7 +19,7 @@ export default function Register() {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch("http://10.60.69.253/auth/register", {
+      const res = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
