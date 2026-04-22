@@ -6,6 +6,9 @@ const authRoutes = require('./routes/authRoutes');
 require('./MySQLmodel/User');
 require('./config/mongo');
 require('./MySQLmodel/index');
+const walletRoutes = require('./routes/walletRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
 
 
@@ -13,6 +16,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/auth', authRoutes);
+app.use('/wallets', walletRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/transactions', transactionRoutes);
 
 app.get('/', (req, res) => {
     res.send("API đang chạy 🚀");

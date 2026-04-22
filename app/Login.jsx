@@ -44,9 +44,6 @@ export default function Login() {
       await AsyncStorage.setItem("userData", JSON.stringify(data.user));
 
       console.log("🎉 Đăng nhập thành công");
-
-      Alert.alert("Đăng nhập thành công 🎉");
-
       router.replace("/(tabs)");
     } catch (err) {
       console.log("❌ Lỗi login:", err);

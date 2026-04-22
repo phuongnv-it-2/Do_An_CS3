@@ -8,7 +8,7 @@ export const getAll = () =>
     api.get('/wallets').then((res) => res.data);
 
 /**
- * GET /wallets/:id
+ * GET /wallets/:id 
  * Response: { data: Wallet }
  */
 export const getById = (id) =>

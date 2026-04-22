@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/mysql');
-const User = require('./User');
 
 const Wallet = sequelize.define('Wallet', {
     id: {
