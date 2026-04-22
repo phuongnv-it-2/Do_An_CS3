@@ -105,7 +105,6 @@ export default function HomeScreen() {
           />
         }
       >
-        {/* --- SECTION 1: HEADER & BALANCE --- */}
         <View style={styles.topHeader}>
           <View>
             <View style={styles.balanceRow}>
@@ -122,7 +121,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* --- SECTION 2: MY WALLETS --- */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Ví của tôi</Text>
@@ -154,7 +152,6 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* --- SECTION 3: MONTHLY REPORT --- */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Báo cáo tháng này</Text>
@@ -191,7 +188,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* --- SECTION 4: TOP SPENDING (Giống ảnh 2 & 3) --- */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Chi tiêu nhiều nhất</Text>
@@ -273,19 +269,6 @@ export default function HomeScreen() {
           )}
         </View>
       </ScrollView>
-
-      {/* --- FOOTER NAVIGATION --- */}
-      <View style={styles.bottomTab}>
-        <TabItem icon="🏠" label="Tổng quan" active />
-        <TabItem icon="📓" label="Sổ giao dịch" />
-        <View style={styles.fabContainer}>
-          <View style={styles.fab}>
-            <Text style={styles.fabText}>+</Text>
-          </View>
-        </View>
-        <TabItem icon="📊" label="Ngân sách" />
-        <TabItem icon="👤" label="Tài khoản" />
-      </View>
     </SafeAreaView>
   );
 }
