@@ -5,6 +5,7 @@ const sequelize = require('./config/mysql');
 const authRoutes = require('./routes/authRoutes');
 require('./MySQLmodel/User');
 require('./config/mongo');
+require('./MySQLmodel/index');
 
 
 
