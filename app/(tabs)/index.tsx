@@ -1,7 +1,5 @@
-import { StyleSheet, Text, View,ImageBackground} from 'react-native'
-import React from 'react'
-import Login from './Login'
-import Register from "./Register";
+import React from 'react';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 const App = () => {
   return (

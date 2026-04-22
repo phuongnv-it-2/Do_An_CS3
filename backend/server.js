@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const sequelize = require('./config/mysql');
 const authRoutes = require('./routes/authRoutes');
-require('./model/User');
+require('./MySQLmodel/User');
 require('./config/mongo');
 
 
