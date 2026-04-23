@@ -1,3 +1,4 @@
+//Màn hình tổng quan
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -61,7 +62,7 @@ export default function HomeScreen() {
 
   const totalBalance = wallets.reduce(
     (acc, curr) => acc + (curr.balance || 0),
-    0
+    0,
   );
 
   const getCategoryInfo = (categoryId) => {
