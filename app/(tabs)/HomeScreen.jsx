@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -93,7 +94,7 @@ export default function HomeScreen() {
     }));
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -124,7 +125,7 @@ export default function HomeScreen() {
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Ví của tôi</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/WalletScreen")}>
               <Text style={styles.seeAll}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>

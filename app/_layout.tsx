@@ -11,6 +11,7 @@ export default function RootLayout() {
 
         {/* App chính */}
         <Stack.Screen name="(tabs)" />
+         <Stack.Screen name="WalletScreen" /> 
       </Stack>
     </AuthProvider>
   );
