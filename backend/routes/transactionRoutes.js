@@ -44,4 +44,28 @@ router.get('/summary', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+router.post('/', async (req, res) => {
+    try {
+        const { amount, type, categoryId, walletId, note, date, userId } = req.body;
+
+        const newTransaction = await Transaction.create({
+            amount,
+            type,
+            categoryId,
+            walletId,
+            note,
+            date,
+            userId
+        });
+
+        res.status(201).json({
+            message: "✅ Transaction created",
+            data: newTransaction
+        });
+
+    } catch (err) {
+        console.error("❌ Lỗi tạo transaction:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
 module.exports = router;

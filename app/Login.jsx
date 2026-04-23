@@ -40,7 +40,7 @@ export default function Login() {
       const response = await api.post("/auth/login", { email, password });
 
       const { data } = response;
-      await signIn(data.token);
+      await signIn(data.token, data.user);
       await AsyncStorage.setItem("userData", JSON.stringify(data.user));
 
       console.log("🎉 Đăng nhập thành công");

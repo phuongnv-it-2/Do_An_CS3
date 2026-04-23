@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ScrollView,
   StatusBar,
@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import * as walletApi from "../backend/controllers/walletAPi";
 
 const formatCurrency = (value) =>
@@ -16,9 +17,12 @@ const formatCurrency = (value) =>
 export default function WalletScreen() {
   const [wallets, setWallets] = useState([]);
 
-  useEffect(() => {
-    walletApi.getAll().then((res) => setWallets(res.data || []));
-  }, []);
+  // Sử dụng useFocusEffect để tự động tải lại dữ liệu khi quay về màn hình này
+  useFocusEffect(
+    useCallback(() => {
+      walletApi.getAll().then((res) => setWallets(res.data || []));
+    }, [])
+  );
 
   const totalBalance = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);
 
@@ -195,6 +199,7 @@ export default function WalletScreen() {
           alignItems: "center",
           justifyContent: "center",
         }}
+        onPress={() => router.push("/AddWallet")}
       >
         <Text style={{ color: "#fff", fontSize: 30, lineHeight: 34 }}>+</Text>
       </TouchableOpacity>
