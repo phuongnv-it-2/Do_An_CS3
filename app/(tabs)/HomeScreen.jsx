@@ -62,7 +62,7 @@ export default function HomeScreen() {
 
   const totalBalance = wallets.reduce(
     (acc, curr) => acc + (curr.balance || 0),
-    0,
+    0
   );
 
   const getCategoryInfo = (categoryId) => {
@@ -157,7 +157,7 @@ export default function HomeScreen() {
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Báo cáo tháng này</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/ReportScreen")}>
               <Text style={styles.seeAll}>Xem báo cáo</Text>
             </TouchableOpacity>
           </View>
