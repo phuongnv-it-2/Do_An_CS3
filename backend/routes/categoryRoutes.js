@@ -4,7 +4,6 @@ const { Op } = require("sequelize");
 
 const router = express.Router();
 
-// 1. Lấy danh sách hạng mục
 router.get("/", async (req, res) => {
   try {
     const { type } = req.query;
@@ -18,12 +17,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 2. Tạo hạng mục mới (Để bạn có thể thêm từ App)
 router.post("/", async (req, res) => {
   try {
     const { id, name, type, icon, userId } = req.body;
     const newCategory = await Category.create({
-      id, // Nếu bạn dùng string như 'food'
+      id,
       name,
       type,
       icon,
@@ -35,31 +33,50 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 3. SEED DATA - Chạy một lần để có dữ liệu mẫu ngay lập tức
 router.post("/seed", async (req, res) => {
   try {
     const defaultCategories = [
-      { id: "food", name: "Ăn uống", type: "expense", icon: "🍔" },
-      { id: "transport", name: "Di chuyển", type: "expense", icon: "🚗" },
-      { id: "shopping", name: "Mua sắm", type: "expense", icon: "🛍️" },
-      { id: "rent", name: "Nhà cửa", type: "expense", icon: "🏠" },
-      { id: "salary", name: "Lương", type: "income", icon: "💰" },
-      { id: "gift", name: "Được tặng", type: "income", icon: "🎁" },
+      { id: "1", name: "Ăn uống", type: "expense", icon: "🍹", color: "#4B5563", isDefault: true },
+      { id: "2", name: "Mua sắm", type: "expense", icon: "🧺", color: "#457B9D", isDefault: true },
+      { id: "3", name: "Đồ dùng cá nhân", type: "expense", icon: "📱", color: "#E9C46A", isDefault: true },
+      { id: "4", name: "Đồ gia dụng", type: "expense", icon: "🔌", color: "#8ECAE6", isDefault: true },
+      { id: "5", name: "Làm đẹp", type: "expense", icon: "💎", color: "#E76F51", isDefault: true },
+      { id: "6", name: "Sức khỏe", type: "expense", icon: "🏥", color: "#E63946", isDefault: true },
+      { id: "7", name: "Khám sức khỏe", type: "expense", icon: "🩺", color: "#2A9D8F", isDefault: true },
+      { id: "8", name: "Thể dục thể thao", type: "expense", icon: "⚽", color: "#264653", isDefault: true },
+      { id: "9", name: "Di chuyển", type: "expense", icon: "🚗", color: "#F4A261", isDefault: true },
+      { id: "10", name: "Bảo dưỡng xe", type: "expense", icon: "🔧", color: "#2A9D8F", isDefault: true },
+      { id: "11", name: "Gia đình", type: "expense", icon: "🏠", color: "#2A9D8F", isDefault: true },
+      { id: "12", name: "Sửa & trang trí nhà", type: "expense", icon: "🏘️", color: "#E9C46A", isDefault: true },
+      { id: "13", name: "Vật nuôi", type: "expense", icon: "🐶", color: "#F4A261", isDefault: true },
+      { id: "14", name: "Giải trí", type: "expense", icon: "🎮", color: "#457B9D", isDefault: true },
+      { id: "15", name: "Dịch vụ trực tuyến", type: "expense", icon: "💳", color: "#2A9D8F", isDefault: true },
+      { id: "16", name: "Vui - chơi", type: "expense", icon: "🕹️", color: "#457B9D", isDefault: true },
+      { id: "17", name: "Hoá đơn & Tiện ích", type: "expense", icon: "💵", color: "#4B5563", isDefault: true },
+      { id: "18", name: "Hoá đơn điện", type: "expense", icon: "⚡", color: "#F4A261", isDefault: true },
+      { id: "19", name: "Hoá đơn điện thoại", type: "expense", icon: "📞", color: "#E63946", isDefault: true },
+      { id: "20", name: "Hoá đơn nước", type: "expense", icon: "💧", color: "#457B9D", isDefault: true },
+      { id: "21", name: "Hoá đơn internet", type: "expense", icon: "🌐", color: "#2A9D8F", isDefault: true },
+      { id: "22", name: "Thuê nhà", type: "expense", icon: "🏠", color: "#E9C46A", isDefault: true },
+      { id: "23", name: "Bảo hiểm", type: "expense", icon: "🛡️", color: "#2A9D8F", isDefault: true },
+      { id: "24", name: "Quà tặng & Quyên góp", type: "expense", icon: "💝", color: "#2A9D8F", isDefault: true },
+      { id: "25", name: "Đầu tư", type: "expense", icon: "📊", color: "#E9C46A", isDefault: true },
+      { id: "26", name: "Tiền chuyển đi", type: "expense", icon: "📤", color: "#E76F51", isDefault: true },
+      { id: "27", name: "Trả lãi", type: "expense", icon: "📉", color: "#E9C46A", isDefault: true },
+      { id: "28", name: "Các chi phí khác", type: "expense", icon: "📦", color: "#9CA3AF", isDefault: true },
+
+      { id: "29", name: "Lương", type: "income", icon: "💰", color: "#30D158", isDefault: true },
+      { id: "30", name: "Thưởng", type: "income", icon: "🎁", color: "#FFD60A", isDefault: true },
+      { id: "31", name: "Bán đồ", type: "income", icon: "🛒", color: "#FF9F0A", isDefault: true },
+      { id: "32", name: "Tiền lãi", type: "income", icon: "📈", color: "#64D2FF", isDefault: true },
+      { id: "33", name: "Được tặng", type: "income", icon: "🎀", color: "#BF5AF2", isDefault: true },
+      { id: "34", name: "Khác", type: "income", icon: "✨", color: "#8E8E93", isDefault: true },
     ];
+    await Category.bulkCreate(defaultCategories, {
+      ignoreDuplicates: true
+    });
 
-    // Gán userId từ body (ví dụ 'user_001') để các category này thuộc về bạn
-    const userId = req.body.userId;
-    if (!userId) return res.status(400).json({ error: "Thiếu userId để seed!" });
-
-    const dataToInsert = defaultCategories.map(cat => ({
-      ...cat,
-      userId: userId
-    }));
-
-    // ignoreDuplicates: true giúp không bị lỗi nếu đã có ID đó rồi
-    await Category.bulkCreate(dataToInsert, { ignoreDuplicates: true });
-
-    res.json({ message: "Đã khởi tạo danh mục mẫu thành công! 🚀" });
+    res.json({ message: "Đã khởi tạo 34 danh mục chuẩn thành công! 🚀" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

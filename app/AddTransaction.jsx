@@ -55,70 +55,219 @@ const DEFAULT_WALLETS = [
 // ─── Danh mục mặc định (fallback) ─────────────────────────────────────────
 const DEFAULT_CATEGORIES = {
   expense: [
+    // --- ĂN UỐNG ---
     {
       id: "food",
       name: "Ăn uống",
-      icon: "🍜",
-      color: "#FF9F0A",
+      icon: "🍹",
+      color: "#4B5563",
       type: "expense",
-    },
-    {
-      id: "transport",
-      name: "Di chuyển",
-      icon: "🚗",
-      color: "#FF375F",
-      type: "expense",
-    },
+    }, //
+
+    // --- MUA SẮM ---
     {
       id: "shopping",
       name: "Mua sắm",
-      icon: "🛍️",
-      color: "#BF5AF2",
+      icon: "🧺",
+      color: "#457B9D",
       type: "expense",
-    },
+    }, //
     {
-      id: "housing",
-      name: "Nhà cửa",
-      icon: "🏠",
-      color: "#5E5CE6",
+      id: "personal_items",
+      name: "Đồ dùng cá nhân",
+      icon: "📱",
+      color: "#E9C46A",
       type: "expense",
-    },
+    }, //
     {
-      id: "bills",
-      name: "Hóa đơn",
-      icon: "🧾",
-      color: "#FFD60A",
+      id: "household_items",
+      name: "Đồ gia dụng",
+      icon: "🔌",
+      color: "#8ECAE6",
       type: "expense",
-    },
+    }, //
     {
-      id: "entertainment",
-      name: "Giải trí",
-      icon: "🎮",
-      color: "#64D2FF",
+      id: "beauty",
+      name: "Làm đẹp",
+      icon: "💎",
+      color: "#E76F51",
       type: "expense",
-    },
+    }, //
+
+    // --- SỨC KHỎE ---
     {
       id: "health",
       name: "Sức khỏe",
       icon: "🏥",
-      color: "#30D158",
+      color: "#E63946",
       type: "expense",
-    },
+    }, //
     {
-      id: "education",
-      name: "Giáo dục",
-      icon: "📚",
-      color: "#0A84FF",
+      id: "medical_checkup",
+      name: "Khám sức khỏe",
+      icon: "🩺",
+      color: "#2A9D8F",
       type: "expense",
-    },
+    }, //
+    {
+      id: "sports",
+      name: "Thể dục thể thao",
+      icon: "⚽",
+      color: "#264653",
+      type: "expense",
+    }, //
+
+    // --- DI CHUYỂN ---
+    {
+      id: "transport",
+      name: "Di chuyển",
+      icon: "🚗",
+      color: "#F4A261",
+      type: "expense",
+    }, //
+    {
+      id: "vehicle_maintenance",
+      name: "Bảo dưỡng xe",
+      icon: "🔧",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+
+    // --- GIA ĐÌNH ---
+    {
+      id: "family",
+      name: "Gia đình",
+      icon: "🏠",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+    {
+      id: "home_repair",
+      name: "Sửa & trang trí nhà",
+      icon: "🏘️",
+      color: "#E9C46A",
+      type: "expense",
+    }, //
+    {
+      id: "pets",
+      name: "Vật nuôi",
+      icon: "🐶",
+      color: "#F4A261",
+      type: "expense",
+    }, //
+
+    // --- GIẢI TRÍ ---
+    {
+      id: "entertainment",
+      name: "Giải trí",
+      icon: "🎮",
+      color: "#457B9D",
+      type: "expense",
+    }, //
+    {
+      id: "online_services",
+      name: "Dịch vụ trực tuyến",
+      icon: "💳",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+    {
+      id: "fun",
+      name: "Vui - chơi",
+      icon: "🕹️",
+      color: "#457B9D",
+      type: "expense",
+    }, //
+
+    // --- HÓA ĐƠN & TIỆN ÍCH ---
+    {
+      id: "bills",
+      name: "Hoá đơn & Tiện ích",
+      icon: "💵",
+      color: "#4B5563",
+      type: "expense",
+    }, //
+    {
+      id: "electricity_bill",
+      name: "Hoá đơn điện",
+      icon: "⚡",
+      color: "#F4A261",
+      type: "expense",
+    }, //
+    {
+      id: "phone_bill",
+      name: "Hoá đơn điện thoại",
+      icon: "📞",
+      color: "#E63946",
+      type: "expense",
+    }, //
+    {
+      id: "water_bill",
+      name: "Hoá đơn nước",
+      icon: "💧",
+      color: "#457B9D",
+      type: "expense",
+    }, //
+    {
+      id: "internet_bill",
+      name: "Hoá đơn internet",
+      icon: "🌐",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+    {
+      id: "rent",
+      name: "Thuê nhà",
+      icon: "🏠",
+      color: "#E9C46A",
+      type: "expense",
+    }, //
+
+    // --- CHI PHÍ KHÁC ---
+    {
+      id: "insurance",
+      name: "Bảo hiểm",
+      icon: "🛡️",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+    {
+      id: "gifts_donations",
+      name: "Quà tặng & Quyên góp",
+      icon: "💝",
+      color: "#2A9D8F",
+      type: "expense",
+    }, //
+    {
+      id: "investment",
+      name: "Đầu tư",
+      icon: "📊",
+      color: "#E9C46A",
+      type: "expense",
+    }, //
+    {
+      id: "transfer_out",
+      name: "Tiền chuyển đi",
+      icon: "📤",
+      color: "#E76F51",
+      type: "expense",
+    }, //
+    {
+      id: "interest_payment",
+      name: "Trả lãi",
+      icon: "📉",
+      color: "#E9C46A",
+      type: "expense",
+    }, //
     {
       id: "other_exp",
-      name: "Khác",
+      name: "Các chi phí khác",
       icon: "📦",
-      color: "#8E8E93",
+      color: "#9CA3AF",
       type: "expense",
-    },
+    }, //
   ],
+
   income: [
     {
       id: "salary",
@@ -135,14 +284,21 @@ const DEFAULT_CATEGORIES = {
       type: "income",
     },
     {
-      id: "investment",
+      id: "selling",
+      name: "Bán đồ",
+      icon: "🛒",
+      color: "#FF9F0A",
+      type: "income",
+    },
+    {
+      id: "interest_income",
       name: "Tiền lãi",
       icon: "📈",
       color: "#64D2FF",
       type: "income",
     },
     {
-      id: "gift",
+      id: "gift_received",
       name: "Được tặng",
       icon: "🎀",
       color: "#BF5AF2",
@@ -157,7 +313,6 @@ const DEFAULT_CATEGORIES = {
     },
   ],
 };
-
 // ─── Helper: format số theo VND ───────────────────────────────────────────
 const formatVND = (numStr) => {
   if (!numStr || numStr === "") return "0";
