@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -9,23 +8,36 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../../backend/context/auth";
+import * as authApi from "../../backend/controllers/authApi";
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("vi-VN").format(value || 0) + " ₫";
+};
 
 export default function ProfileScreen() {
+  const { user: authUser, signOut } = useAuth();
   const [user, setUser] = useState(null);
-  const { signOut } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const getUserData = async () => {
-      const userData = await AsyncStorage.getItem("userData");
-      if (userData) setUser(JSON.parse(userData));
+    const fetchProfile = async () => {
+      try {
+        const response = await authApi.getProfile();
+        setUser(response.user);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // Fallback to auth context user data
+        setUser(authUser);
+      }
     };
-    getUserData();
-  }, []);
+
+    if (authUser) {
+      fetchProfile();
+    }
+  }, [authUser]);
 
   const handleLogout = async () => {
     await signOut();
-    await AsyncStorage.removeItem("userData");
     router.replace("/Login"); // Điều hướng về app/Login.jsx
   };
 
@@ -54,7 +66,7 @@ export default function ProfileScreen() {
         <View style={styles.divider} />
         <Text style={styles.label}>Số dư hiện tại</Text>
         <Text style={[styles.value, { color: "#2ECC71" }]}>
-          {user.balance?.toLocaleString()} đ
+          {formatCurrency(user.balance)}
         </Text>
       </View>
 
