@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors as theme } from "../../assets/theme/colors";
+import { useAuth } from "../../backend/context/auth";
 import * as categoryApi from "../../backend/controllers/categoryApi";
 import * as transactionApi from "../../backend/controllers/transactionApi";
 import * as walletApi from "../../backend/controllers/walletAPi";
@@ -22,6 +23,7 @@ const formatCurrency = (value) => {
 };
 
 export default function HomeScreen() {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -33,9 +35,9 @@ export default function HomeScreen() {
   const loadData = useCallback(async () => {
     try {
       const [wRes, sRes, tRes, cRes] = await Promise.all([
-        walletApi.getAll(),
-        transactionApi.getSummary(),
-        transactionApi.getAll({ limit: 5 }),
+        walletApi.getAll({ userId: user?.id }),
+        transactionApi.getSummary({ userId: user?.id }),
+        transactionApi.getAll({ limit: 5, userId: user?.id }),
         categoryApi.getVisible(),
       ]);
 
@@ -49,7 +51,7 @@ export default function HomeScreen() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     loadData();
@@ -62,7 +64,7 @@ export default function HomeScreen() {
 
   const totalBalance = wallets.reduce(
     (acc, curr) => acc + (curr.balance || 0),
-    0
+    0,
   );
 
   const getCategoryInfo = (categoryId) => {

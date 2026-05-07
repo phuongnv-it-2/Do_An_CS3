@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -43,14 +43,6 @@ const TYPE_CONFIG = {
     label: "Khoản thu",
   },
 };
-
-// ─── Danh sách ví mặc định (fallback nếu API chưa có) ─────────────────────
-const DEFAULT_WALLETS = [
-  { id: "cash", name: "Tiền mặt", icon: "💵" },
-  { id: "bank", name: "Ngân hàng", icon: "🏦" },
-  { id: "momo", name: "Ví Momo", icon: "🩷" },
-  { id: "zalopay", name: "ZaloPay", icon: "💙" },
-];
 
 // ─── Danh mục mặc định (fallback) ─────────────────────────────────────────
 const DEFAULT_CATEGORIES = {
@@ -349,9 +341,9 @@ export default function AddTransaction() {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES.expense);
-  const [wallets, setWallets] = useState(DEFAULT_WALLETS);
+  const [wallets, setWallets] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedWallet, setSelectedWallet] = useState(DEFAULT_WALLETS[0]);
+  const [selectedWallet, setSelectedWallet] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showNumpad, setShowNumpad] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
@@ -359,33 +351,32 @@ export default function AddTransaction() {
   const { user } = useAuth();
 
   // ── Fetch data ─────────────────────────────────────────────────────────
-  useEffect(() => {
-    fetchData();
-  }, [type]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [catRes, wallRes] = await Promise.all([
         CategoryApi.getVisible(type),
-        WalletApi.getAll(),
+        WalletApi.getAll({ userId: user?.id }),
       ]);
       const catsData = catRes?.data || catRes || DEFAULT_CATEGORIES[type] || [];
-      const wallData = wallRes?.data || wallRes || DEFAULT_WALLETS;
+      const wallData = wallRes?.data || wallRes || [];
 
       setCategories(
-        catsData.length > 0 ? catsData : DEFAULT_CATEGORIES[type] || []
+        catsData.length > 0 ? catsData : DEFAULT_CATEGORIES[type] || [],
       );
-      if (wallData.length > 0) {
-        setWallets(wallData);
-        setSelectedWallet(wallData[0]);
-      }
+      setWallets(wallData);
+      setSelectedWallet(wallData.length > 0 ? wallData[0] : null);
       setSelectedCategory(null);
     } catch (err) {
       console.error("Lỗi fetch:", err);
       setCategories(DEFAULT_CATEGORIES[type] || []);
-      setWallets(DEFAULT_WALLETS);
+      setWallets([]);
+      setSelectedWallet(null);
     }
-  };
+  }, [type, user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // ── Đổi loại giao dịch ────────────────────────────────────────────────
   const handleSetType = (t) => {
@@ -427,8 +418,8 @@ export default function AddTransaction() {
       Alert.alert("Lỗi", "Vui lòng chọn một danh mục");
       return;
     }
-    if (!selectedWallet) {
-      Alert.alert("Lỗi", "Vui lòng chọn ví");
+    if (!selectedWallet || !wallets.some((w) => w.id === selectedWallet?.id)) {
+      Alert.alert("Lỗi", "Vui lòng chọn một ví hợp lệ");
       return;
     }
 
@@ -630,7 +621,7 @@ export default function AddTransaction() {
                   {k === "del" ? "⌫" : k}
                 </Text>
               </TouchableOpacity>
-            )
+            ),
           )}
         </View>
       )}

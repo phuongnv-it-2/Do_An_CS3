@@ -4,8 +4,8 @@ import api from '../Service/api';
  * GET /wallets
  * Response: { data: Wallet[] }
  */
-export const getAll = () =>
-    api.get('/wallets').then((res) => res.data);
+export const getAll = (params) =>
+    api.get('/wallets', { params }).then((res) => res.data);
 
 /**
  * GET /wallets/:id 

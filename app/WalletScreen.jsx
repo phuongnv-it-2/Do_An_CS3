@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+import { SafeAreaView } from "react-native-safe-area-context";import { useAuth } from "../backend/context/auth";
 import * as walletApi from "../backend/controllers/walletAPi";
 
 const formatCurrency = (value) =>
@@ -16,12 +15,13 @@ const formatCurrency = (value) =>
 
 export default function WalletScreen() {
   const [wallets, setWallets] = useState([]);
+  const { user } = useAuth();
 
   // Sử dụng useFocusEffect để tự động tải lại dữ liệu khi quay về màn hình này
   useFocusEffect(
     useCallback(() => {
-      walletApi.getAll().then((res) => setWallets(res.data || []));
-    }, [])
+      walletApi.getAll({ userId: user?.id }).then((res) => setWallets(res.data || []));
+    }, [user])
   );
 
   const totalBalance = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);

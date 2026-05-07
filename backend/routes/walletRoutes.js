@@ -5,7 +5,14 @@ const router = express.Router();
 // 1. Lấy danh sách ví (GET)
 router.get('/', async (req, res) => {
     try {
-        const wallets = await Wallet.findAll();
+        const { userId } = req.query;
+        const where = {};
+
+        if (userId) {
+            where.userId = userId;
+        }
+
+        const wallets = await Wallet.findAll({ where });
         res.json({ data: wallets });
     } catch (err) {
         res.status(500).json({ error: err.message });
