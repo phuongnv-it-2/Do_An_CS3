@@ -1,5 +1,5 @@
-//Màn hình tổng quan
 import { router } from "expo-router";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -31,6 +31,7 @@ export default function HomeScreen() {
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0 });
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [balanceVisible, setBalanceVisible] = useState(true);
 
   const loadData = useCallback(async () => {
     try {
@@ -64,7 +65,7 @@ export default function HomeScreen() {
 
   const totalBalance = wallets.reduce(
     (acc, curr) => acc + (curr.balance || 0),
-    0,
+    0
   );
 
   const getCategoryInfo = (categoryId) => {
@@ -113,15 +114,34 @@ export default function HomeScreen() {
           <View>
             <View style={styles.balanceRow}>
               <Text style={styles.totalBalanceText}>
-                {formatCurrency(totalBalance)}
+                {balanceVisible ? formatCurrency(totalBalance) : "••••••••"}
               </Text>
-              <Text style={{ fontSize: 18, marginLeft: 10 }}>👁️</Text>
+              <TouchableOpacity
+                onPress={() => setBalanceVisible(!balanceVisible)}
+                style={{ marginLeft: 10 }}
+              >
+                <Ionicons
+                  name={balanceVisible ? "eye-outline" : "eye-off-outline"}
+                  size={22}
+                  color="#aaa"
+                />
+              </TouchableOpacity>
             </View>
             <Text style={styles.subText}>Tổng số dư</Text>
           </View>
+
           <View style={styles.headerIcons}>
-            <Text style={styles.iconAction}>🔍</Text>
-            <Text style={styles.iconAction}>🔔</Text>
+            <TouchableOpacity
+              onPress={() => router.push("/SearchScreen")}
+              style={{ marginRight: 14 }}
+            >
+              <Ionicons name="search-outline" size={22} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/NotificationScreen")}
+            >
+              <Ionicons name="notifications-outline" size={22} color="#fff" />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -195,7 +215,9 @@ export default function HomeScreen() {
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Chi tiêu nhiều nhất</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/ExpenseDetailScreen")}
+            >
               <Text style={styles.seeAll}>Xem chi tiết</Text>
             </TouchableOpacity>
           </View>
@@ -231,7 +253,9 @@ export default function HomeScreen() {
         <View style={[styles.sectionCard, { marginBottom: 100 }]}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Giao dịch gần đây</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/TransactionListScreen")}
+            >
               <Text style={styles.seeAll}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>

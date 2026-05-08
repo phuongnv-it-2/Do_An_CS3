@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors as theme } from "../assets/theme/colors";
+import { useAuth } from "../backend/context/auth";
 import * as transactionApi from "../backend/controllers/transactionApi";
 import * as categoryApi from "../backend/controllers/categoryApi";
 
@@ -194,13 +195,16 @@ export default function ReportScreen() {
   const [monthlyData, setMonthlyData] = useState([]);
   const [categoryBreakdown, setCategoryBreakdown] = useState([]);
   const [categories, setCategories] = useState([]);
+  const { user } = useAuth();
 
   const loadData = useCallback(async () => {
+    if (!user?.id) return;
+
     try {
       const [sRes, tRes, cRes] = await Promise.all([
-        transactionApi.getSummary(),
-        transactionApi.getAll({ limit: 200 }),
-        categoryApi.getVisible(),
+        transactionApi.getSummary({ userId: user.id }),
+        transactionApi.getAll({ limit: 200, userId: user.id }),
+        categoryApi.getVisible(null),
       ]);
 
       const allTx = tRes.data || [];
@@ -246,12 +250,12 @@ export default function ReportScreen() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [tab]);
+  }, [tab, user?.id]);
 
   useEffect(() => {
     setIsLoading(true);
     loadData();
-  }, [loadData]);
+  }, [loadData, user?.id]);
 
   const onRefresh = () => {
     setIsRefreshing(true);
