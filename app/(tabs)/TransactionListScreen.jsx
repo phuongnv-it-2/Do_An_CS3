@@ -14,10 +14,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../backend/context/auth";
-import * as transactionApi from "../backend/controllers/transactionApi";
-import * as walletApi from "../backend/controllers/walletAPi";
-import * as categoryApi from "../backend/controllers/categoryApi";
+import { useAuth } from "../../backend/context/auth";
+import * as transactionApi from "../../backend/controllers/transactionApi";
+import * as walletApi from "../../backend/controllers/walletAPi";
+import * as categoryApi from "../../backend/controllers/categoryApi";
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("vi-VN").format(value || 0);

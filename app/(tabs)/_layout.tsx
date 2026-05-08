@@ -28,6 +28,7 @@
 
     return (
       <Tabs
+      initialRouteName="HomeScreen"
         screenOptions={{
           headerShown: false,
           tabBarStyle: { display: "none" },
@@ -40,17 +41,17 @@
           return (
             <View style={styles.bottomTab}>
               <CustomTabItem
-                label="Home"
+                label="Tổng quan"
                 icon="📓"
-                isFocused={isTabActive("index")}
-                onPress={() => navigation.navigate("index")}
+                isFocused={isTabActive("HomeScreen")}
+                onPress={() => navigation.navigate("HomeScreen")}
               />
 
               <CustomTabItem
-                label="Tổng quan"
+                label="Số giao dịch"
                 icon="🏠"
-                isFocused={isTabActive("HomeScreen")}
-                onPress={() => navigation.navigate("HomeScreen")}
+                isFocused={isTabActive("TransactionListScreen")}
+                onPress={() => navigation.navigate("TransactionListScreen")}
               />
 
               <View style={styles.fabContainer}>
@@ -62,14 +63,12 @@
                   <Text style={styles.fabText}>+</Text>
                 </TouchableOpacity>
               </View>
-
-              <CustomTabItem
-                label="Ngân sách"
-                icon="📊"
-                isFocused={false} // Bạn có thể thêm route cho cái này sau
-                onPress={() => {}}
-              />
-
+<CustomTabItem
+  label="Ngân sách"
+  icon="📊"
+  isFocused={isTabActive("BudgetScreen")}
+  onPress={() => navigation.navigate("BudgetScreen")}
+/>
               <CustomTabItem
                 label="Tài khoản"
                 icon="👤"
@@ -86,10 +85,11 @@
           );
         }}
       >
-        <Tabs.Screen name="HomeScreen" options={{ title: "Home" }} />
-        <Tabs.Screen name="index" options={{ title: "Example" }} />
-        <Tabs.Screen name="ProfileScreen" options={{ href: null }} />
-        <Tabs.Screen name="WalletScreen" options={{ href: null }} />
+        <Tabs.Screen name="HomeScreen" options={{ title: "Tổng Quan" }} />
+  
+ <Tabs.Screen name="BudgetScreen" options={{ title: "Ngân Sách" }} />
+  <Tabs.Screen name="ProfileScreen" options={{title:"Tài Khoản" ,href: null }} />
+  <Tabs.Screen name="WalletScreen" options={{ title:"Số Giao Dịch" ,href: null }} />
       </Tabs>
     );
   }

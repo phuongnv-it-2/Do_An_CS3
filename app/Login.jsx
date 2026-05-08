@@ -22,10 +22,6 @@ export default function Login() {
   const router = useRouter();
 
   const handleLogin = async () => {
-    console.log("👉 Bắt đầu login");
-    console.log("📧 Email:", email);
-    console.log("🔑 Password:", password);
-
     animation.current?.play();
 
     if (!email || !password) {
@@ -35,8 +31,6 @@ export default function Login() {
     }
 
     try {
-      console.log("🚀 Gửi request tới /auth/login...");
-
       const response = await api.post("/auth/login", { email, password });
 
       const { data } = response;
@@ -44,7 +38,7 @@ export default function Login() {
       await AsyncStorage.setItem("userData", JSON.stringify(data.user));
 
       console.log("🎉 Đăng nhập thành công");
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/HomeScreen");
     } catch (err) {
       console.log("❌ Lỗi login:", err);
 

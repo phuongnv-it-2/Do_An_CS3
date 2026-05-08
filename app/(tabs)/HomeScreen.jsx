@@ -216,7 +216,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Chi tiêu nhiều nhất</Text>
             <TouchableOpacity
-              onPress={() => router.push("/ExpenseDetailScreen")}
+              onPress={() => router.push("/ExpenseDeta  ilScreen")}
             >
               <Text style={styles.seeAll}>Xem chi tiết</Text>
             </TouchableOpacity>

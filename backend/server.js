@@ -9,6 +9,7 @@ require('./MySQLmodel/index');
 const walletRoutes = require('./routes/walletRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const budgetRoutes = require("./routes/BudgetRoutes");
 
 
 
@@ -19,6 +20,7 @@ app.use('/auth', authRoutes);
 app.use('/wallets', walletRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/transactions', transactionRoutes);
+app.use("/budgets", budgetRoutes);
 
 app.get('/', (req, res) => {
     res.send("API đang chạy 🚀");
