@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ReportChartSection from "../components/ReportChartSection";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors as theme } from "../../assets/theme/colors";
 import { useAuth } from "../../backend/context/auth";
@@ -30,22 +31,25 @@ export default function HomeScreen() {
   const [wallets, setWallets] = useState([]);
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0 });
   const [recentTransactions, setRecentTransactions] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]); // ← cho biểu đồ
   const [categories, setCategories] = useState([]);
   const [balanceVisible, setBalanceVisible] = useState(true);
 
   const loadData = useCallback(async () => {
     try {
-      const [wRes, sRes, tRes, cRes] = await Promise.all([
+      const [wRes, sRes, tRes, cRes, allTRes] = await Promise.all([
         walletApi.getAll({ userId: user?.id }),
         transactionApi.getSummary({ userId: user?.id }),
         transactionApi.getAll({ limit: 5, userId: user?.id }),
         categoryApi.getVisible(),
+        transactionApi.getAll({ userId: user?.id }), // ← tất cả GD cho chart
       ]);
 
       setWallets(wRes.data || []);
       setSummary(sRes.data || { totalIncome: 0, totalExpense: 0 });
       setRecentTransactions(tRes.data || []);
       setCategories(cRes.data || []);
+      setAllTransactions(allTRes.data || []); // ← set cho biểu đồ
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
     } finally {
@@ -110,6 +114,7 @@ export default function HomeScreen() {
           />
         }
       >
+        {/* ── HEADER ── */}
         <View style={styles.topHeader}>
           <View>
             <View style={styles.balanceRow}>
@@ -145,6 +150,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* ── VÍ CỦA TÔI ── */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Ví của tôi</Text>
@@ -176,6 +182,7 @@ export default function HomeScreen() {
           ))}
         </View>
 
+        {/* ── BÁO CÁO + BIỂU ĐỒ (thay chartPlaceholder) ── */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Báo cáo tháng này</Text>
@@ -184,39 +191,21 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.reportRow}>
-            <View style={styles.reportHalf}>
-              <Text style={styles.reportLabel}>Tổng đã chi</Text>
-              <Text style={[styles.reportValue, { color: theme.danger }]}>
-                {formatCurrency(summary.totalExpense)}
-              </Text>
-              <View
-                style={[styles.indicator, { backgroundColor: theme.danger }]}
-              />
-            </View>
-            <View style={styles.reportHalf}>
-              <Text style={styles.reportLabel}>Tổng thu</Text>
-              <Text style={[styles.reportValue, { color: theme.blue }]}>
-                {formatCurrency(summary.totalIncome)}
-              </Text>
-              <View
-                style={[styles.indicator, { backgroundColor: theme.blue }]}
-              />
-            </View>
-          </View>
-
-          <View style={styles.chartPlaceholder}>
-            <Text style={styles.placeholderText}>
-              Nhập giao dịch để xem báo cáo
-            </Text>
-          </View>
+          {/* ✅ Biểu đồ thực tế thay cho placeholder */}
+          <ReportChartSection
+            transactions={allTransactions}
+            summary={summary}
+            theme={theme}
+            formatCurrency={formatCurrency}
+          />
         </View>
 
+        {/* ── CHI TIÊU NHIỀU NHẤT ── */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Chi tiêu nhiều nhất</Text>
             <TouchableOpacity
-              onPress={() => router.push("/ExpenseDeta  ilScreen")}
+              onPress={() => router.push("/ExpenseDetailScreen")}
             >
               <Text style={styles.seeAll}>Xem chi tiết</Text>
             </TouchableOpacity>
@@ -249,7 +238,7 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* --- SECTION 5: RECENT TRANSACTIONS --- */}
+        {/* ── GIAO DỊCH GẦN ĐÂY ── */}
         <View style={[styles.sectionCard, { marginBottom: 100 }]}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Giao dịch gần đây</Text>
@@ -300,10 +289,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const TabItem = ({ icon, label, active }) => (
-  <TouchableOpacity style={styles.tabBtn}>
-    <Text style={{ fontSize: 20, opacity: active ? 1 : 0.5 }}>{icon}</Text>
-    <Text style={[styles.tabLabel, active && { color: "#FFF" }]}>{label}</Text>
-  </TouchableOpacity>
-);

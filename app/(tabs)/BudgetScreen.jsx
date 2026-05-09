@@ -233,7 +233,14 @@ function BudgetItem({ item, onEdit, onDelete }) {
 }
 
 // ─── Form Modal (Tạo / Sửa) ───────────────────────────────────────────────────
-function BudgetFormModal({ visible, onClose, onSave, editItem, period }) {
+function BudgetFormModal({
+  visible,
+  onClose,
+  onSave,
+  editItem,
+  period,
+  userId,
+}) {
   const [name, setName] = useState("");
   const [limitAmount, setLimitAmount] = useState("");
   const [selectedCat, setSelectedCat] = useState(null);
@@ -268,6 +275,7 @@ function BudgetFormModal({ visible, onClose, onSave, editItem, period }) {
     );
 
     const payload = {
+      userId,
       name: name.trim(),
       limit_amount: parseFloat(limitAmount),
       categoryId: selectedCat?.id || null,
@@ -275,7 +283,6 @@ function BudgetFormModal({ visible, onClose, onSave, editItem, period }) {
       start_date,
       end_date,
     };
-
     setLoading(true);
     try {
       if (editItem) {
@@ -408,49 +415,11 @@ export default function BudgetScreen() {
   const fetchBudgets = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await budgetService.getAll(period);
+      const res = await budgetService.getAll(period, user?.id);
       setBudgets(res.data || []);
       setOverview(res.overview || { totalLimit: 0, totalSpent: 0 });
     } catch (err) {
-      // Nếu chưa kết nối API, dùng data mẫu
-      setBudgets([
-        {
-          id: 1,
-          name: "Ăn uống",
-          categoryId: 1,
-          limit_amount: 3000000,
-          spent: 2100000,
-        },
-        {
-          id: 2,
-          name: "Di chuyển",
-          categoryId: 2,
-          limit_amount: 1500000,
-          spent: 400000,
-        },
-        {
-          id: 3,
-          name: "Giải trí",
-          categoryId: 3,
-          limit_amount: 500000,
-          spent: 650000,
-        },
-        {
-          id: 4,
-          name: "Mua sắm",
-          categoryId: 4,
-          limit_amount: 2000000,
-          spent: 800000,
-        },
-        {
-          id: 5,
-          name: "Sức khỏe",
-          categoryId: 5,
-          limit_amount: 1000000,
-          spent: 300000,
-        },
-      ]);
-      setOverview({ totalLimit: 8000000, totalSpent: 4250000 });
+      alert("Lỗi", "Không thể tải dữ liệu ngân sách");
     } finally {
       setLoading(false);
     }
@@ -588,6 +557,7 @@ export default function BudgetScreen() {
         onSave={fetchBudgets}
         editItem={editItem}
         period={activeTab}
+        userId={user?.id}
       />
     </View>
   );

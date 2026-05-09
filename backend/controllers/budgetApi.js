@@ -5,9 +5,13 @@ import api from '../Service/api';
  * Trả về danh sách ngân sách của user kèm tổng đã chi
  * Response: { success, overview, data: Budget[] }
  */
-export const getAll = (period = null) =>
-    api.get('/budgets', { params: period ? { period } : {} }).then((res) => res.data);
-
+export const getAll = (period = null, userId = null) =>
+    api.get('/budgets', {
+        params: {
+            ...(period ? { period } : {}),
+            ...(userId ? { userId } : {})
+        }
+    }).then((res) => res.data);
 /**
  * GET /budgets/:id
  * Trả về chi tiết 1 ngân sách kèm spent, remaining, percent
