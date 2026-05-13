@@ -361,7 +361,7 @@ export default function AddTransaction() {
       const wallData = wallRes?.data || wallRes || [];
 
       setCategories(
-        catsData.length > 0 ? catsData : DEFAULT_CATEGORIES[type] || [],
+        catsData.length > 0 ? catsData : DEFAULT_CATEGORIES[type] || []
       );
       setWallets(wallData);
       setSelectedWallet(wallData.length > 0 ? wallData[0] : null);
@@ -621,7 +621,7 @@ export default function AddTransaction() {
                   {k === "del" ? "⌫" : k}
                 </Text>
               </TouchableOpacity>
-            ),
+            )
           )}
         </View>
       )}

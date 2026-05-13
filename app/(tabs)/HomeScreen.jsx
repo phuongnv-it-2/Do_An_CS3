@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ReportChartSection from "../components/ReportChartSection";
+import ReportChartSection from "../../components/ReportChartSection";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors as theme } from "../../assets/theme/colors";
 import { useAuth } from "../../backend/context/auth";
