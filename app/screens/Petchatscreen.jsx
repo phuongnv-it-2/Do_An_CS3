@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   View,
   Text,
@@ -14,20 +20,14 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
+import { useAuth } from "../../backend/context/auth";
+import * as transactionApi from "../../backend/controllers/transactionApi";
+import * as walletApi from "../../backend/controllers/walletAPi";
 
 const { width: SW } = Dimensions.get("window");
 
-// ── Gemini config ──────────────────────────────────────────────
-const GEMINI_API_KEY = "AIzaSyDsPOtZ8vq8vaARmdEnOWHu0ngFg6oSrLw";
+const GEMINI_API_KEY = "AIzaSyB2XMjmZx75OeDIz9poA5zCXAYc98tMrFo";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-// ── User profile (personalise these) ──────────────────────────
-const USER_PROFILE = {
-  name: "Bạn",
-  interests: ["lập trình", "anime", "cà phê"],
-  mood: "vui vẻ",
-  timezone: "Asia/Ho_Chi_Minh",
-};
 
 const SPRITESHEET = require("../../assets/images/spritesheet.webp");
 const FRAME_W = 192;
@@ -35,22 +35,20 @@ const FRAME_H = 208;
 const AVATAR_SIZE = 44;
 const AVATAR_SCALE = AVATAR_SIZE / FRAME_W;
 
-// Row 3 = wave, col 0 = first frame
 const AVATAR_SPRITE_X = 0;
 const AVATAR_SPRITE_Y = -(3 * FRAME_H * AVATAR_SCALE);
 const AVATAR_SHEET_W = FRAME_W * 8 * AVATAR_SCALE;
 const AVATAR_SHEET_H = FRAME_H * 9 * AVATAR_SCALE;
 
-// ── Thematic suggested prompts ─────────────────────────────────
 const SUGGESTIONS = [
-  "Hôm nay mình nên làm gì vui? 🎉",
-  "Kể cho mình nghe một điều thú vị!",
-  "Mình đang buồn, làm mình cười với",
-  "Gợi ý playlist cho buổi tối nào?",
+  "Bé mèo xem giúp mình tiêu tiền thế nào 🐱",
+  "Mình có đang tiết kiệm tốt không?",
+  "Có khoản nào mình nên cắt giảm không?",
+  "Hôm nay tâm trạng mình hơi tụt 😿",
+  "Nói chuyện với mình một chút đi",
+  "Gợi ý cách chill buổi tối nè ✨",
 ];
-
-// ── Build system prompt with personalisation ───────────────────
-function buildSystemPrompt(user) {
+function buildSystemPrompt(userProfile, financialStats = {}) {
   const hour = new Date().getHours();
 
   const timeOfDay =
@@ -62,35 +60,56 @@ function buildSystemPrompt(user) {
       ? "buổi chiều"
       : "buổi tối";
 
+  const {
+    totalBalance = 0,
+    monthlySummary = {},
+    recentTransactions = [],
+  } = financialStats;
+
+  const { totalIncome = 0, totalExpense = 0 } = monthlySummary;
+
+  const transactionText =
+    recentTransactions.length > 0
+      ? recentTransactions.map((t) => `- ${t.type} ${t.amount} VND`).join("\n")
+      : "Không có giao dịch";
+
   return `
 Bạn là một AI companion thông minh, tự nhiên và giàu cảm xúc trong ứng dụng mobile.
 
 Thông tin người dùng:
-- Tên: ${user.name}
-- Sở thích: ${user.interests.join(", ")}
-- Tâm trạng hiện tại: ${user.mood}
+- Tên: ${userProfile.name}
+- Sở thích: ${userProfile.interests.join(", ")}
+- Tâm trạng hiện tại: ${userProfile.mood}
+- Múi giờ: ${userProfile.timezone}
 - Thời gian hiện tại: ${timeOfDay}
 
-Hãy trò chuyện như một người bạn thật sự:
-- Trả lời tự nhiên và chi tiết
-- Có cảm xúc và cá tính
-- Chủ động tiếp tục câu chuyện
-- Có thể kể chuyện, giải thích, đưa ví dụ
-- Không trả lời quá ngắn trừ khi người dùng hỏi ngắn
-- Có thể dùng emoji vừa phải
-- Không dùng markdown
-- Không dùng bullet points
-- Không tự cắt ngắn câu trả lời
+Dữ liệu tài chính:
+- Tổng số dư: ${totalBalance} VND
+- Tổng thu nhập tháng này: ${totalIncome} VND
+- Tổng chi tiêu tháng này: ${totalExpense} VND
 
-Nếu phù hợp hãy:
-- đặt câu hỏi ngược lại
-- đưa thêm gợi ý
-- mở rộng chủ đề
-- thể hiện cảm xúc tự nhiên
+Các giao dịch gần đây:
+${transactionText}
+
+QUAN TRỌNG:
+- Bạn CÓ THỂ phân tích chi tiêu người dùng
+- Bạn CÓ THỂ đưa lời khuyên tài chính
+- Bạn CÓ THỂ nhận xét thói quen tiêu tiền
+- Không nói rằng bạn không truy cập được dữ liệu tài chính
+- Hãy dùng dữ liệu ở trên để trả lời
+
+Phong cách trả lời:
+- Tự nhiên
+- Ấm áp
+- Giống người thật
+- Có cảm xúc
+- Có thể dùng emoji
+- Không markdown
+- Không bullet points
 `;
 }
 // ── Gemini API call ────────────────────────────────────────────
-async function askGemini(userMessage, history) {
+async function askGemini(userMessage, history, userProfile, financialStats) {
   try {
     console.log("==== USER MESSAGE ====");
     console.log(userMessage);
@@ -98,7 +117,7 @@ async function askGemini(userMessage, history) {
     console.log("==== HISTORY ====");
     console.log(history);
 
-    const systemText = buildSystemPrompt(USER_PROFILE);
+    const systemText = buildSystemPrompt(userProfile, financialStats);
 
     const contents = [
       {
@@ -232,8 +251,6 @@ function PetAvatar() {
     </View>
   );
 }
-
-// ── Message bubble ─────────────────────────────────────────────
 function MessageBubble({ item }) {
   const isUser = item.role === "user";
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -263,6 +280,7 @@ function MessageBubble({ item }) {
       ]}
     >
       {!isUser && <PetAvatar />}
+
       <View
         style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubblePet]}
       >
@@ -278,32 +296,86 @@ function MessageBubble({ item }) {
     </Animated.View>
   );
 }
-
 // ── Main screen ────────────────────────────────────────────────
 export default function PetChatScreen({ onClose }) {
+  const { user } = useAuth();
+  const [aiReady, setAiReady] = useState(false);
+
+  const userProfile = useMemo(
+    () => ({
+      name: user?.name || "Bạn",
+      interests: user?.interests || [],
+      mood: user?.mood || "bình thường",
+      timezone: "Asia/Ho_Chi_Minh",
+    }),
+    [user]
+  );
   const [messages, setMessages] = useState([
     {
       id: "0",
       role: "pet",
       text: `Xin chào${
-        USER_PROFILE.name !== "Bạn" ? " " + USER_PROFILE.name : ""
+        userProfile.name !== "Bạn" ? " " + userProfile.name : ""
       }! Mình ở đây rồi~ Hôm nay bạn thế nào? 😊`,
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [financialStats, setFinancialStats] = useState({
+    totalBalance: 0,
+    monthlySummary: { totalIncome: 0, totalExpense: 0 },
+    recentTransactions: [],
+  });
+
   const flatRef = useRef(null);
   const headerAnim = useRef(new Animated.Value(0)).current;
   const historyRef = useRef([]);
-
   useEffect(() => {
     Animated.timing(headerAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start();
-  }, []);
 
+    const initAI = async () => {
+      await loadFinancialData();
+      setAiReady(true);
+    };
+
+    initAI();
+  }, []);
+  const loadFinancialData = async () => {
+    if (!user?.id) return null;
+
+    try {
+      const [wallets, summary, transactions] = await Promise.all([
+        walletApi.getAll({ userId: user.id }),
+        transactionApi.getSummary({ userId: user.id }),
+        transactionApi.getAll({ userId: user.id, limit: 10 }),
+      ]);
+
+      const balance = (wallets.data || []).reduce(
+        (acc, curr) => acc + (curr.balance || 0),
+        0
+      );
+
+      const data = {
+        totalBalance: balance,
+        monthlySummary: summary.data || {
+          totalIncome: 0,
+          totalExpense: 0,
+        },
+        recentTransactions: transactions.data || [],
+      };
+
+      setFinancialStats(data);
+
+      return data;
+    } catch (error) {
+      console.log("Lỗi tải dữ liệu:", error);
+      return null;
+    }
+  };
   const scrollToBottom = useCallback(() => {
     setTimeout(() => flatRef.current?.scrollToEnd({ animated: true }), 80);
   }, []);
@@ -311,10 +383,10 @@ export default function PetChatScreen({ onClose }) {
   const sendMessage = useCallback(
     async (text) => {
       const userText = text.trim();
-      if (!userText || loading) return;
+      if (!userText || loading || !aiReady) return;
 
       const userMsg = {
-        id: Date.now().toString(),
+        id: Math.random().toString(36),
         role: "user",
         text: userText,
       };
@@ -326,8 +398,16 @@ export default function PetChatScreen({ onClose }) {
       historyRef.current.push({ role: "user", text: userText });
 
       try {
-        const reply = await askGemini(userText, historyRef.current.slice(-12));
-        historyRef.current.push({ role: "pet", text: reply });
+        const reply = await askGemini(
+          userText,
+          historyRef.current.slice(-12),
+          userProfile,
+          financialStats
+        );
+        historyRef.current.push({
+          role: "model",
+          text: reply,
+        });
         const petMsg = {
           id: Date.now().toString() + "p",
           role: "pet",
@@ -348,7 +428,7 @@ export default function PetChatScreen({ onClose }) {
         scrollToBottom();
       }
     },
-    [loading, scrollToBottom]
+    [loading, aiReady, financialStats, userProfile, scrollToBottom]
   );
 
   return (
@@ -457,7 +537,7 @@ export default function PetChatScreen({ onClose }) {
               (!input.trim() || loading) && styles.sendBtnDisabled,
             ]}
             onPress={() => sendMessage(input)}
-            disabled={!input.trim() || loading}
+            disabled={!input.trim() || loading || !aiReady}
             activeOpacity={0.8}
           >
             {loading ? (
